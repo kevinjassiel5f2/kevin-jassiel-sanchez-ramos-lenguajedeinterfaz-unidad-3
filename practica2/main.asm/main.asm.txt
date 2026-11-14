@@ -1,0 +1,39 @@
+; ==============================================================================
+; Materia: Lenguajes de Interfaz
+; Profesor: Jose Luis Medina Jimenez
+; Alumno: Kevin Jassiel Sánchez Ramos
+; Horario: 8:00 AM - 9:00 AM
+; Práctica 2: Procedimientos anidados
+; Descripción: main llama a procUno y procUno llama a procDos. En cada nivel se
+; imprime en hexadecimal el valor en el tope de la pila ([esp]), que es la
+; dirección de retorno de ese procedimiento.
+; ==============================================================================
+
+INCLUDE Irvine32.inc
+
+.data
+.code
+main PROC
+    mov eax, [esp]          ; En main, [esp] contiene la dirección de retorno al sistema
+    call WriteHex           ; Imprime el valor en hexadecimal
+    call Crlf
+    call procUno            ; Llamada al primer procedimiento (anida a procDos)
+    exit
+main ENDP
+
+procUno PROC
+    mov eax, [esp]          ; [esp] = dirección de retorno hacia main
+    call WriteHex
+    call Crlf
+    call procDos            ; Llamada anidada: procDos se ejecuta dentro de procUno
+    ret                     ; Regresa a main
+procUno ENDP
+
+procDos PROC
+    mov eax, [esp]          ; [esp] = dirección de retorno hacia procUno
+    call WriteHex
+    call Crlf
+    ret                     ; Regresa a procUno
+procDos ENDP
+
+END main

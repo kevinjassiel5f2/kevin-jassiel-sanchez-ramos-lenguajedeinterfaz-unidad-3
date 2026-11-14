@@ -1,0 +1,45 @@
+; ==============================================================================
+; Materia: Lenguajes de Interfaz
+; Profesor: Jose Luis Medina Jimenez
+; Alumno: Kevin Jassiel Sánchez Ramos
+; Horario: 8:00 AM - 9:00 AM
+; Práctica 1: Procedimiento (modularizar)
+; Descripción: Un mismo procedimiento (mensajeAviso) se llama dos veces para
+; reutilizar el código en lugar de repetirlo.
+; ==============================================================================
+
+INCLUDE Irvine32.inc
+
+.data
+mensajeInicio        BYTE "inicio de programa", 0
+mensajeProcedimiento BYTE "Estoy dentro del procedimiento", 0
+mensajeFin           BYTE "Fin del programa", 0
+
+.code
+main PROC
+    mov edx, OFFSET mensajeInicio
+    call WriteString
+    call Crlf
+
+    ; Primera llamada al procedimiento
+    call mensajeAviso
+    mov eax, 10
+
+    ; Segunda llamada al procedimiento
+    call mensajeAviso        ; EIP salta a las instrucciones dentro del procedimiento
+    mov eax, 20
+
+    mov edx, OFFSET mensajeFin
+    call WriteString
+    call Crlf
+    exit
+main ENDP
+
+mensajeAviso PROC
+    mov edx, OFFSET mensajeProcedimiento
+    call WriteString
+    call Crlf
+    ret                      ; Recupera de la pila la dirección de la instrucción siguiente al CALL
+mensajeAviso ENDP
+
+END main

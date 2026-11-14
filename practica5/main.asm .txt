@@ -1,0 +1,39 @@
+; ==============================================================================
+; Materia: Lenguajes de Interfaz
+; Profesor: Jose Luis Medina Jimenez
+; Alumno: Kevin Jassiel Sánchez Ramos
+; Horario: 8:00 AM - 9:00 AM
+; Práctica 5: Macros
+; Descripción: Define dos macros (MostrarMensaje y Multi) y las usa en main.
+; ==============================================================================
+
+INCLUDE Irvine32.inc
+
+; Macro que imprime una cadena seguida de un salto de línea
+MostrarMensaje MACRO texto
+    mov edx, OFFSET texto
+    call WriteString
+    call Crlf
+ENDM
+
+; Macro que multiplica dos números e imprime el resultado con signo
+Multi MACRO num1, num2
+    mov eax, num1
+    imul eax, num2          ; EAX = num1 * num2
+    call WriteInt
+    call Crlf
+ENDM
+
+.data
+mensajeBienvenida BYTE "BIENVENIDO AL SISTEMA DE GLOWUP MAKEUP SINALOA", 0
+mensajeFin        BYTE "ADIOS", 0
+
+.code
+main PROC
+    MostrarMensaje mensajeBienvenida    ; Imprime el mensaje de bienvenida
+    MostrarMensaje mensajeFin           ; Imprime el mensaje de despedida
+    Multi 4, 5                          ; Multiplica 4 * 5 e imprime +20
+    exit                                ; Termina el programa
+main ENDP
+
+END main

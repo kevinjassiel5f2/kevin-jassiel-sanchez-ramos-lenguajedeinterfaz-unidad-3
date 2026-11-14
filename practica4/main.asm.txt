@@ -1,0 +1,46 @@
+; ==============================================================================
+; Materia: Lenguajes de Interfaz
+; Profesor: Jose Luis Medina Jimenez
+; Alumno: Kevin Jassiel Sánchez Ramos
+; Horario: 8:00 AM - 9:00 AM
+; Práctica 4: Validar cadena
+; Descripción: Pide una cadena al usuario e indica si está vacía o no.
+; ==============================================================================
+
+INCLUDE Irvine32.inc
+
+.data
+cadena      BYTE 50 DUP(0)                                            ; Buffer donde se guarda lo que escribe el usuario
+msgPedir    BYTE "Ingresa una cadena (o presiona Enter para dejarla vacia): ", 0
+msgVacia    BYTE "La cadena ESTA vacia.", 0
+msgNoVacia  BYTE "La cadena NO esta vacia.", 0
+
+.code
+main PROC
+    ; 1. Pedir y leer la cadena
+    mov edx, OFFSET msgPedir
+    call WriteString                  ; Muestra el mensaje de petición
+    mov edx, OFFSET cadena          ; EDX = dirección del buffer
+    mov ecx, SIZEOF cadena - 1      ; ECX = máximo de caracteres (deja 1 byte para el terminador nulo)
+    call ReadString                   ; Lee la entrada del usuario (guarda la longitud en EAX)
+
+    ; 2. Validar si está vacía comprobando el primer byte
+    cmp BYTE PTR [cadena], 0        ; ¿El primer carácter es el terminador nulo (0)?
+    je EsVacia                        ; Si es igual a 0, está vacía
+
+NoEsVacia:
+    mov edx, OFFSET msgNoVacia
+    call WriteString                  ; Muestra "La cadena NO esta vacia."
+    call Crlf
+    jmp Fin                           ; Salta para no ejecutar la rama EsVacia
+
+EsVacia:
+    mov edx, OFFSET msgVacia
+    call WriteString                  ; Muestra "La cadena ESTA vacia."
+    call Crlf
+
+Fin:
+    exit                              ; Termina el programa
+main ENDP
+
+END main

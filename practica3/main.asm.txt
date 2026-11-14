@@ -1,0 +1,36 @@
+; ==============================================================================
+; Materia: Lenguajes de Interfaz
+; Profesor: Jose Luis Medina Jimenez
+; Alumno: Kevin Jassiel Sánchez Ramos
+; Horario: 8:00 AM - 9:00 AM
+; Práctica 3: Manejo de pila manual
+; Descripción: Se pasan dos parámetros por la pila (1 y 2) y el procedimiento
+; sumarPila los lee usando EBP como punto de referencia y deja el producto en EAX.
+; ==============================================================================
+
+INCLUDE Irvine32.inc
+
+.data
+.code
+main PROC
+    mov ebx, 10              ; EBX con un valor que el procedimiento debe preservar
+    push 1                   ; Segundo parámetro apilado
+    push 2                   ; Primer parámetro apilado
+    call sumarPila           ; El procedimiento limpia la pila con ret 8
+    nop                      ; Punto para inspeccionar EAX (resultado) en el depurador
+    exit
+main ENDP
+
+sumarPila PROC
+    push ebp                 ; Guarda EBP anterior en la pila
+    mov ebp, esp             ; EBP pasa a ser la referencia para moverse en la pila
+    push ebx                 ; Preserva el valor original de EBX
+    mov eax, [ebp+8]         ; Accede al primer argumento (valor 2)
+    mov ebx, [ebp+12]        ; Accede al segundo argumento (valor 1)
+    imul eax, ebx            ; imul permite especificar 2 registros (mul siempre multiplica EAX)
+    pop ebx                  ; Restaura el valor original de EBX
+    pop ebp                  ; Restaura el puntero base EBP
+    ret 8                    ; Regresa y limpia los 2 parámetros (8 bytes) puestos antes del call
+sumarPila ENDP
+
+END main
